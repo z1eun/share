@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>바이브코딩 활용 놀이앱 모음</title>
   
-  <!-- 오케이단단체 웹폰트 적용 -->
+  <!-- 오케이단단체 웹폰트 정의 및 전체 강제 적용 -->
   <style>
     @font-face {
       font-family: 'OkDandan';
@@ -13,16 +13,23 @@
       font-weight: normal;
       font-style: normal;
     }
+    @font-face {
+      font-family: 'OkDandan';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2508-2@1.0/OkDanDan-Bold.woff2') format('woff2');
+      font-weight: bold;
+      font-style: normal;
+    }
 
-    * {
+    /* 모든 태그에 오케이단단체 강제 적용 */
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: 'OkDandan', cursive, sans-serif !important;
     }
 
     body {
       background-color: #f7ebf1;
-      font-family: 'OkDandan', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #3b1e32;
       min-height: 100vh;
       display: flex;
@@ -46,17 +53,15 @@
     }
 
     .main-title {
-      font-size: 34px;
-      font-weight: normal;
+      font-size: 36px;
       color: #8c1e5b;
       letter-spacing: 2px;
       margin-bottom: 8px;
     }
 
     .sub-title {
-      font-size: 14px;
+      font-size: 14.5px;
       color: #947187;
-      font-weight: normal;
       letter-spacing: 0.5px;
     }
 
@@ -93,7 +98,7 @@
     }
 
     .card-icon {
-      font-size: 40px;
+      font-size: 42px;
       margin-bottom: 14px;
       line-height: 1;
       display: flex;
@@ -102,9 +107,126 @@
     }
 
     .card-icon img {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       object-fit: contain;
     }
 
-    .card
+    .card-title {
+      font-size: 18px;
+      color: #8f1b5d;
+      text-align: center;
+      word-break: keep-all;
+      line-height: 1.35;
+    }
+
+    .status-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 0;
+      color: #9c6c87;
+      font-size: 17px;
+    }
+
+    /* 반응형 레이아웃 */
+    @media (max-width: 768px) {
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      .main-title {
+        font-size: 28px;
+      }
+      .app-card {
+        padding: 20px 12px;
+        min-height: 110px;
+      }
+      .card-title {
+        font-size: 16px;
+      }
+      .card-icon {
+        font-size: 36px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <!-- CSV 파싱 라이브러리 (PapaParse) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+  <header class="header">
+    <div class="top-icon">🧸</div>
+    <h1 class="main-title">바이브코딩 활용 놀이앱 모음</h1>
+    <p class="sub-title">제작: 대전성천초등학교병설유치원 교사 / 무단배포를 금지합니다</p>
+  </header>
+
+  <main class="grid-container" id="cards-container">
+    <div class="status-msg">놀이앱 목록을 불러오는 중입니다... 💕</div>
+  </main>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7GkLYYfZqjohXjKb_ZyNpI86nbRnafZ3eZsbfogBHIBnF31DOXzZtCAP7HJ94bM4-0X7ZTq9QV8Ox/pub?gid=0&single=true&output=csv";
+
+    Papa.parse(CSV_URL, {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: function(results) {
+        renderCards(results.data);
+      },
+      error: function(err) {
+        console.error("CSV 로드 실패:", err);
+        document.getElementById('cards-container').innerHTML = 
+          '<div class="status-msg">목록을 불러오지 못했습니다. 잠시 후 다시 확인해주세요.</div>';
+      }
+    });
+
+    function renderCards(data) {
+      const container = document.getElementById('cards-container');
+      container.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        container.innerHTML = '<div class="status-msg">등록된 놀이앱이 없습니다.</div>';
+        return;
+      }
+
+      data.forEach(item => {
+        const title = (item.title || item.Title || item['제목'] || '').trim();
+        const icon = (item.icon || item.Icon || item['아이콘'] || '').trim();
+        const url = (item.url || item.Url || item['링크'] || item['주소'] || '').trim();
+
+        if (!title && !url) return;
+
+        const card = document.createElement('a');
+        card.className = 'app-card';
+        card.href = url || '#';
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+
+        let iconMarkup = '✨';
+        if (icon) {
+          if (icon.startsWith('http://') || icon.startsWith('https://')) {
+            iconMarkup = `<img src="${icon}" alt="${title}">`;
+          } else {
+            iconMarkup = icon;
+          }
+        }
+
+        card.innerHTML = `
+          <div class="card-icon">${iconMarkup}</div>
+          <div class="card-title">${title}</div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
