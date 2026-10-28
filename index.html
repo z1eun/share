@@ -1,19 +1,231 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>바이브코딩 활용 놀이앱 모음 웹 허브</title>
-    <meta name="description" content="대전성천초등학교병설유치원 교사가 제작한 바이브코딩 교육용 놀이앱 모음 플랫폼입니다. 수업과 일과 시간에 손쉽게 활용할 수 있는 웹 허브입니다." />
-    <meta property="og:title" content="바이브코딩 활용 놀이앱 모음 웹 허브" />
-    <meta property="og:description" content="대전성천초등학교병설유치원 교사가 제작한 바이브코딩 교육용 놀이앱 모음 플랫폼입니다. 수업과 일과 시간에 손쉽게 활용할 수 있는 웹 허브입니다." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>바이브코딩 활용 놀이앱 모음</title>
+  <!-- 구글 폰트 (둥글고 귀여운 나눔스퀘어라운드 대체용 Gowun Dodum) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <!-- CSV 파싱 라이브러리 (PapaParse) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
+    body {
+      background-color: #fceef4;
+      font-family: 'Gowun Dodum', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #4a2040;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    /* 헤더 영역 */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .top-icon {
+      font-size: 52px;
+      line-height: 1;
+      margin-bottom: 12px;
+      display: inline-block;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+    }
+
+    .main-title {
+      font-size: 30px;
+      font-weight: 700;
+      color: #9c276a;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .sub-title {
+      font-size: 13.5px;
+      color: #8f6b80;
+      font-weight: 400;
+    }
+
+    /* 카드 그리드 컨테이너 */
+    .grid-container {
+      width: 100%;
+      max-width: 860px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    /* 개별 앱 카드 */
+    .app-card {
+      background-color: #ffffff;
+      border: 1.5px solid #f6d1df;
+      border-radius: 24px;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(220, 160, 185, 0.15);
+      transition: all 0.22s ease-in-out;
+      cursor: pointer;
+      min-height: 120px;
+    }
+
+    .app-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 22px rgba(210, 140, 170, 0.28);
+      border-color: #f1b3cb;
+    }
+
+    .card-icon {
+      font-size: 34px;
+      margin-bottom: 12px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-icon img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #a32269;
+      text-align: center;
+      word-break: keep-all;
+      line-height: 1.35;
+    }
+
+    /* 로딩 및 안내 메시지 */
+    .status-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 0;
+      color: #9c6c87;
+      font-size: 16px;
+    }
+
+    /* 반응형 레이아웃 */
+    @media (max-width: 768px) {
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      .main-title {
+        font-size: 24px;
+      }
+      .app-card {
+        padding: 20px 12px;
+        min-height: 110px;
+      }
+      .card-title {
+        font-size: 14.5px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="top-icon">🧸</div>
+    <h1 class="main-title">바이브코딩 활용 놀이앱 모음</h1>
+    <p class="sub-title">제작: 대전성천초등학교병설유치원 교사 / 무단배포를 금지합니다</p>
+  </header>
+
+  <main class="grid-container" id="cards-container">
+    <div class="status-msg">놀이앱 목록을 불러오는 중입니다... 💕</div>
+  </main>
+
+  <script>
+    // 복사해주신 구글 스프레드시트 CSV 주소
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7GkLYYfZqjohXjKb_ZyNpI86nbRnafZ3eZsbfogBHIBnF31DOXzZtCAP7HJ94bM4-0X7ZTq9QV8Ox/pub?gid=0&single=true&output=csv";
+
+    // 데이터 가져오기 및 렌더링
+    Papa.parse(CSV_URL, {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: function(results) {
+        renderCards(results.data);
+      },
+      error: function(err) {
+        console.error("CSV 로드 실패:", err);
+        document.getElementById('cards-container').innerHTML = 
+          '<div class="status-msg">목록을 불러오지 못했습니다. 잠시 후 다시 접속해주세요.</div>';
+      }
+    });
+
+    function renderCards(data) {
+      const container = document.getElementById('cards-container');
+      container.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        container.innerHTML = '<div class="status-msg">등록된 놀이앱이 없습니다.</div>';
+        return;
+      }
+
+      data.forEach(item => {
+        const title = (item.title || item['제목'] || '').trim();
+        let icon = (item.icon || item['아이콘'] || '').trim();
+        let url = (item.url || item['링크'] || item['주소'] || '').trim();
+
+        // 시트 B열에 아이콘 대신 링크를 바로 적었을 때의 자동 보정
+        if (!url && icon && (icon.startsWith('http://') || icon.startsWith('https://'))) {
+          url = icon;
+          icon = '🎮';
+        }
+
+        // 아이콘이 비어있을 경우 기본 아이콘
+        if (!icon) icon = '🎮';
+
+        // 제목과 URL이 모두 없으면 표시 생략
+        if (!title && !url) return;
+
+        const card = document.createElement('a');
+        card.className = 'app-card';
+        card.href = url || '#';
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+
+        let iconMarkup = '';
+        if (icon.startsWith('http://') || icon.startsWith('https://')) {
+          iconMarkup = `<img src="${icon}" alt="${title}">`;
+        } else {
+          iconMarkup = icon;
+        }
+
+        card.innerHTML = `
+          <div class="card-icon">${iconMarkup}</div>
+          <div class="card-title">${title}</div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
