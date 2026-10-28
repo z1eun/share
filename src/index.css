@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'OkDandan';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2508-2@1.0/OkDanDan-Bold.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-hub-bg: #E5DDDE;
+  --color-card-bg: #FFFFFF;
+  --color-card-border: #F6D3DE;
+  --color-hub-title: #493342;
+  --color-hub-sub: #59465F;
+}
+
+body {
+  font-family: 'OkDandan', -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  background-color: #E5DDDE;
+  color: #493342;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar for cute aesthetics */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #E5DDDE;
+}
+::-webkit-scrollbar-thumb {
+  background: #d8cbd0;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c7b6bd;
+}

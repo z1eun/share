@@ -1,0 +1,6 @@
+{
+  "name": "바이브코딩 활용 놀이앱 모음 웹 허브",
+  "description": "대전성천초등학교병설유치원 교사가 제작한 바이브코딩 교육용 놀이앱 모음 플랫폼입니다. 수업과 일과 시간에 손쉽게 활용할 수 있는 웹 허브입니다.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
