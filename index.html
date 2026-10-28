@@ -4,14 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>바이브코딩 활용 놀이앱 모음</title>
-  <!-- 구글 폰트 (둥글고 귀여운 나눔스퀘어라운드 대체용 Gowun Dodum) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
-  <!-- CSV 파싱 라이브러리 (PapaParse) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   
+  <!-- 오케이단단체 웹폰트 적용 -->
   <style>
+    @font-face {
+      font-family: 'OKDDAN';
+      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/OKDDAN.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -19,14 +21,14 @@
     }
 
     body {
-      background-color: #fceef4;
-      font-family: 'Gowun Dodum', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #4a2040;
+      background-color: #f7ebf1;
+      font-family: 'OKDDAN', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #3b1e32;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px;
+      padding: 45px 20px;
     }
 
     /* 헤더 영역 */
@@ -36,31 +38,32 @@
     }
 
     .top-icon {
-      font-size: 52px;
+      font-size: 54px;
       line-height: 1;
       margin-bottom: 12px;
       display: inline-block;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.06));
     }
 
     .main-title {
-      font-size: 30px;
-      font-weight: 700;
-      color: #9c276a;
-      letter-spacing: 1px;
+      font-size: 34px;
+      font-weight: normal;
+      color: #8c1e5b;
+      letter-spacing: 2px;
       margin-bottom: 8px;
     }
 
     .sub-title {
-      font-size: 13.5px;
-      color: #8f6b80;
-      font-weight: 400;
+      font-size: 14px;
+      color: #947187;
+      font-weight: normal;
+      letter-spacing: 0.5px;
     }
 
     /* 카드 그리드 컨테이너 */
     .grid-container {
       width: 100%;
-      max-width: 860px;
+      max-width: 880px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
@@ -69,29 +72,29 @@
     /* 개별 앱 카드 */
     .app-card {
       background-color: #ffffff;
-      border: 1.5px solid #f6d1df;
-      border-radius: 24px;
-      padding: 24px 16px;
+      border: 1.8px solid #f6d1df;
+      border-radius: 26px;
+      padding: 26px 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      box-shadow: 0 4px 16px rgba(220, 160, 185, 0.15);
+      box-shadow: 0 4px 16px rgba(220, 160, 185, 0.16);
       transition: all 0.22s ease-in-out;
       cursor: pointer;
-      min-height: 120px;
+      min-height: 125px;
     }
 
     .app-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 22px rgba(210, 140, 170, 0.28);
+      box-shadow: 0 10px 24px rgba(205, 130, 165, 0.3);
       border-color: #f1b3cb;
     }
 
     .card-icon {
-      font-size: 34px;
-      margin-bottom: 12px;
+      font-size: 40px;
+      margin-bottom: 14px;
       line-height: 1;
       display: flex;
       align-items: center;
@@ -99,28 +102,26 @@
     }
 
     .card-icon img {
-      width: 36px;
-      height: 36px;
+      width: 42px;
+      height: 42px;
       object-fit: contain;
-      border-radius: 6px;
     }
 
     .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #a32269;
+      font-size: 17px;
+      font-weight: normal;
+      color: #8f1b5d;
       text-align: center;
       word-break: keep-all;
       line-height: 1.35;
     }
 
-    /* 로딩 및 안내 메시지 */
     .status-msg {
       grid-column: 1 / -1;
       text-align: center;
       padding: 40px 0;
       color: #9c6c87;
-      font-size: 16px;
+      font-size: 17px;
     }
 
     /* 반응형 레이아웃 */
@@ -130,14 +131,17 @@
         gap: 14px;
       }
       .main-title {
-        font-size: 24px;
+        font-size: 26px;
       }
       .app-card {
         padding: 20px 12px;
         min-height: 110px;
       }
       .card-title {
-        font-size: 14.5px;
+        font-size: 15px;
+      }
+      .card-icon {
+        font-size: 34px;
       }
     }
 
@@ -147,6 +151,9 @@
       }
     }
   </style>
+
+  <!-- CSV 파싱 라이브러리 (PapaParse) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body>
 
@@ -161,10 +168,8 @@
   </main>
 
   <script>
-    // 복사해주신 구글 스프레드시트 CSV 주소
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7GkLYYfZqjohXjKb_ZyNpI86nbRnafZ3eZsbfogBHIBnF31DOXzZtCAP7HJ94bM4-0X7ZTq9QV8Ox/pub?gid=0&single=true&output=csv";
 
-    // 데이터 가져오기 및 렌더링
     Papa.parse(CSV_URL, {
       download: true,
       header: true,
@@ -175,7 +180,7 @@
       error: function(err) {
         console.error("CSV 로드 실패:", err);
         document.getElementById('cards-container').innerHTML = 
-          '<div class="status-msg">목록을 불러오지 못했습니다. 잠시 후 다시 접속해주세요.</div>';
+          '<div class="status-msg">목록을 불러오지 못했습니다. 잠시 후 다시 확인해주세요.</div>';
       }
     });
 
@@ -189,20 +194,11 @@
       }
 
       data.forEach(item => {
-        const title = (item.title || item['제목'] || '').trim();
-        let icon = (item.icon || item['아이콘'] || '').trim();
-        let url = (item.url || item['링크'] || item['주소'] || '').trim();
+        // 컬럼명 대소문자나 한글/영문 모두 대응
+        const title = (item.title || item.Title || item['제목'] || '').trim();
+        const icon = (item.icon || item.Icon || item['아이콘'] || '').trim();
+        const url = (item.url || item.Url || item['링크'] || item['주소'] || '').trim();
 
-        // 시트 B열에 아이콘 대신 링크를 바로 적었을 때의 자동 보정
-        if (!url && icon && (icon.startsWith('http://') || icon.startsWith('https://'))) {
-          url = icon;
-          icon = '🎮';
-        }
-
-        // 아이콘이 비어있을 경우 기본 아이콘
-        if (!icon) icon = '🎮';
-
-        // 제목과 URL이 모두 없으면 표시 생략
         if (!title && !url) return;
 
         const card = document.createElement('a');
@@ -211,11 +207,14 @@
         card.target = '_blank';
         card.rel = 'noopener noreferrer';
 
-        let iconMarkup = '';
-        if (icon.startsWith('http://') || icon.startsWith('https://')) {
-          iconMarkup = `<img src="${icon}" alt="${title}">`;
-        } else {
-          iconMarkup = icon;
+        // 아이콘 렌더링: 이미지 링크면 img 태그, 아니면 시트에 적힌 이모지 그대로 출력
+        let iconMarkup = '✨';
+        if (icon) {
+          if (icon.startsWith('http://') || icon.startsWith('https://')) {
+            iconMarkup = `<img src="${icon}" alt="${title}">`;
+          } else {
+            iconMarkup = icon; // 스프레드시트에 입력한 이모지가 그대로 들어갑니다.
+          }
         }
 
         card.innerHTML = `
